@@ -82,12 +82,12 @@
         var gridsize = 0.008 * 7; //Grid size in degrees
         
         let polygons = [];
-    	let startingPoint = [23.1027909, 61.5539133];
-        let initialCoords = [23.1027909, 61.5539133];
+    	let startingPoint = [22.960094, 60.501127];
+        let initialCoords = [22.960094, 60.501127];
 
-        [...Array(250).keys()].map((key, rowIndex) => {
+        [...Array(270).keys()].map((key, rowIndex) => {
         	initialCoords = startingPoint;
-        	[...Array(200).keys()].map((key, lineIndex) => {
+        	[...Array(230).keys()].map((key, lineIndex) => {
 		        let c = [{lat: initialCoords[0], lng: initialCoords[1]}];
 		        // setTimeout(function() {
 		   //      	fetch('http://api.positionstack.com/v1/reverse?access_key=d762a891f0cfa9b5867adb4f8c2493df&query=' +initialCoords[0] + ',' + initialCoords[1])
@@ -110,7 +110,8 @@
 		        // c.push({lat: initialCoords[0], lng: initialCoords[1]})
 	        })
         })
-        // console.log(JSON.stringify(polygons))
+        console.log(polygons.length)
+        download(JSON.stringify(polygons), 'new_coordinates.json', 'application/json')
         map.data.add({
 		    geometry: new google.maps.Data.Polygon(polygons),
 		});
@@ -293,13 +294,13 @@
     	// );
     	// console.log(createCoord([24.8352349, 66.9970123], 180, 3000))
     	// $('#map').show();
-    	// initialize()
+    	initialize()
 
-        $.getJSON('compiled.json', function(data) {
-            $.getJSON('doctors.json', function (doctors) {
-                drawFromJSON(data, doctors)
-            })
-        });
+        // $.getJSON('compiled.json', function(data) {
+        //     $.getJSON('doctors.json', function (doctors) {
+        //         drawFromJSON(data, doctors)
+        //     })
+        // });
 
     	// fetchDoctors().then(response => {
     	// 	// $('#map').show();

@@ -6,7 +6,7 @@ import json
 coords = []
 counter = 1;
 
-f = open("coords4.json")
+f = open("data/coords4.json")
 data = json.load(f)
 for coord in data:
 	print(counter)
@@ -14,7 +14,7 @@ for coord in data:
 	if g.country == 'PAK':
 		coords.append(coord)
 	counter += 1
-with open('filtered4.json', 'w') as outfile:
+with open('processed/processed4.json', 'w') as outfile:
     json.dump(coords, outfile)
 
 print('Its Done')
