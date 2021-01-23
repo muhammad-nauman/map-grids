@@ -1,7 +1,7 @@
 import json
 
 compiled = [];
-for index in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
+for index in ['4', '5', '7', '8', '9']:
 	f = open("processed/processed" + index + ".json")
 	data = json.load(f)
 	compiled = compiled + data

@@ -294,13 +294,13 @@
     	// );
     	// console.log(createCoord([24.8352349, 66.9970123], 180, 3000))
     	// $('#map').show();
-    	initialize()
+    	// initialize()
 
-        // $.getJSON('compiled.json', function(data) {
-        //     $.getJSON('doctors.json', function (doctors) {
-        //         drawFromJSON(data, doctors)
-        //     })
-        // });
+        $.getJSON('compiled/compiled.json', function(data) {
+            $.getJSON('doctors.json', function (doctors) {
+                drawFromJSON(data, doctors)
+            })
+        });
 
     	// fetchDoctors().then(response => {
     	// 	// $('#map').show();
