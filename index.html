@@ -51,7 +51,8 @@
         // myCenter = new google.maps.LatLng(23.1027909, 61.5539133),
         myCenter = new google.maps.LatLng(29.36847417787891, 70.04310603094801),
         gridstyle = { strokeColor: 'yellow', strokeWeight: 1 };
-    grid = [],
+        gridstyleWithDoctors = { strokeColor: 'red', strokeWeight: 3 };
+        polygons = [],
         markers = []
 
     function fetchDoctors() {
@@ -80,8 +81,7 @@
 
         map = new google.maps.Map(document.getElementById('map'), mapProp);
         var gridsize = 0.008 * 7; //Grid size in degrees
-        
-        let polygons = [];
+
     	let startingPoint = [22.960094, 60.501127];
         let initialCoords = [22.960094, 60.501127];
 
@@ -149,11 +149,11 @@
         	initialCoords = firstPoint;
         	drawLineArray.map(key => {
             	let coords = createCoord(initialCoords, 270, 7000)
-	            let gridline = new google.maps.Polyline({
+	            let polygon = new google.maps.Polyline({
 	            	path: [{lat: initialCoords[0], lng: initialCoords[1]}, {lat: coords[0], lng: coords[1]}],
 	            	map: map,
 	            })
-	            gridline.setOptions(gridstyle);
+	            polygon.setOptions(gridstyle);
 	            initialCoords = coords;
             })
             initialCoords = firstPoint
@@ -173,12 +173,12 @@
         	initialCoords = firstPoint;
         	[...Array(250).keys()].map(key => {
             	let coords = createCoord(initialCoords, 0, 7000)
-	            let gridline = new google.maps.Polyline({
+	            let polygon = new google.maps.Polyline({
 	            	path: [{lat: initialCoords[0], lng: initialCoords[1]}, {lat: coords[0], lng: coords[1]}],
 	            	map: map,
 	            })
-	            gridline.setOptions(gridstyle);
-	            grid.push(gridline);
+	            polygon.setOptions(gridstyle);
+	            polygons.push(polygon);
 	            initialCoords = coords;
             })
             initialCoords = firstPoint
@@ -247,13 +247,38 @@
 
         map = new google.maps.Map(document.getElementById('map'), mapProp);
         data.map(coord => {
-            let gridline = new google.maps.Polyline({
-                path: coord,
+            let polygon = new google.maps.Polyline({
+                path: coord.coords,
                 map: map,
             })
-            gridline.setOptions(gridstyle);
-            grid.push(gridline);
+            polygon.setOptions(coord.containsDoctors === true ? gridstyleWithDoctors : gridstyle);
+            polygons.push(polygon);
+            return coord
         })
+        // const slicedPolygons = polygons.slice(13000, 19000)
+        // const slicedCoords = data.slice(13000, 19000)
+        // let d = [];
+        // let exist = false
+
+        // slicedPolygons.map((polygon, index) => {
+        //     console.log(index)
+        //     for (const doctor of doctors) {
+        //         exist = google.maps.geometry.poly.containsLocation(
+        //             new google.maps.LatLng(doctor.Latitude, doctor.Longitude),
+        //             polygon
+        //         )
+        //         if(exist === true) break;
+        //     }
+        //     d[index] = {
+        //         coords: slicedCoords[index],
+        //         containsDoctors: exist
+        //     }
+        //     exist = false
+        //     return polygon
+        // })
+
+        // console.log('modified', d)
+        // download(JSON.stringify(d), '3.json', 'application/json')
         doctors.map(function(doctor) {
             const addedMarkers = markers.filter(marker => {
                 marker.label === `${doctor.DoctorName}-${doctor.DoctorCode}`
@@ -296,7 +321,7 @@
     	// $('#map').show();
     	// initialize()
 
-        $.getJSON('compiled/compiled.json', function(data) {
+        $.getJSON('compiled/compiled_f.json', function(data) {
             $.getJSON('doctors.json', function (doctors) {
                 drawFromJSON(data, doctors)
             })
