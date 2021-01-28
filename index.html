@@ -255,8 +255,8 @@
             polygons.push(polygon);
             return coord
         })
-        // const slicedPolygons = polygons.slice(13000, 20000)
-        // const slicedCoords = data.slice(13000, 20000)
+        // const slicedPolygons = polygons.slice(13600, 21000)
+        // const slicedCoords = data.slice(13600, 21000)
         // let d = [];
         // let exist = false
         // let count = 0
@@ -325,7 +325,7 @@
     	// initialize()
 
         $.getJSON('compiled/compiled_f.json', function(data) {
-            console.log(data.filter(c => c.containsDoctors))
+            console.log(data.filter(c => c.containsDoctors).length)
             $.getJSON('doctors.json', function (doctors) {
                 drawFromJSON(data, doctors)
             })
