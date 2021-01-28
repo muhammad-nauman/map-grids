@@ -255,10 +255,11 @@
             polygons.push(polygon);
             return coord
         })
-        // const slicedPolygons = polygons.slice(13000, 19000)
-        // const slicedCoords = data.slice(13000, 19000)
+        // const slicedPolygons = polygons.slice(13000, 20000)
+        // const slicedCoords = data.slice(13000, 20000)
         // let d = [];
         // let exist = false
+        // let count = 0
 
         // slicedPolygons.map((polygon, index) => {
         //     console.log(index)
@@ -267,13 +268,15 @@
         //             new google.maps.LatLng(doctor.Latitude, doctor.Longitude),
         //             polygon
         //         )
-        //         if(exist === true) break;
+        //         if(exist === true) count++;
         //     }
         //     d[index] = {
+        //         count,
         //         coords: slicedCoords[index],
-        //         containsDoctors: exist
+        //         containsDoctors: count > 0,
         //     }
         //     exist = false
+        //     count = 0
         //     return polygon
         // })
 
@@ -322,6 +325,7 @@
     	// initialize()
 
         $.getJSON('compiled/compiled_f.json', function(data) {
+            console.log(data.filter(c => c.containsDoctors))
             $.getJSON('doctors.json', function (doctors) {
                 drawFromJSON(data, doctors)
             })

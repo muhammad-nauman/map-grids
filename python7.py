@@ -11,7 +11,7 @@ data = json.load(f)
 for coord in data:
 	print(counter)
 	g = geocoder.arcgis([coord[0]['lat'], coord[0]['lng']], method='reverse')
-	if g.country == 'PAK':
+	if g.country == 'PAK' or g.state == 'Jammu & Kashmir':
 		coords.append(coord)
 	counter += 1
 with open('processed/processed7.json', 'w') as outfile:
