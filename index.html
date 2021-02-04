@@ -8,338 +8,117 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spin.js/4.1.0/spin.min.css" integrity="sha512-ssYEuK9Epo/48VIlBWTFosf1izrgGZqEMELJP+L7Clh0nvaOSTg87dM+Z8L+KKjrPdMbMvKYOOnzBOkNMhWFsg==" crossorigin="anonymous" />
-    <style type="text/css">
-    #map {
-        position: relative;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100vh;
-        border: 1px solid #999;
-        z-index: 100;
-    }
-    .loader {
-    	position: absolute;
-		border: 16px solid #f3f3f3; /* Light grey */
-		border-top: 16px solid #3498db; /* Blue */
-		border-radius: 50%;
-		width: 120px;
-		height: 120px;
-		animation: spin 2s linear infinite;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-	}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
-	@keyframes spin {
-	  0% { transform: rotate(0deg); }
-	  100% { transform: rotate(360deg); }
-	}
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
 </head>
 
 <body>
     <div id="map"></div>
-    <div class="loader"></div>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.10&sensor=false&libraries=geometry,places&key=AIzaSyCkmw8aEuoiSjeMs-nDkF6FGdGqwWEwtMw"></script>
-    <script src="https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/geocodezip/v3-utility-library@master/archive/maplabel/src/maplabel.js"></script>
-    <script>
-    var map,
-        // myCenter = new google.maps.LatLng(23.1027909, 61.5539133),
-        myCenter = new google.maps.LatLng(29.36847417787891, 70.04310603094801),
-        gridstyle = { strokeColor: 'yellow', strokeWeight: 1 };
-        gridstyleWithDoctors = { strokeColor: 'red', strokeWeight: 1 };
-        polygons = [],
-        markers = []
+    <div class="sidebar">
+        <div class="sidebar__header">
+            <h3 class="sidebar__heading">Grids Allocation</h3>
+        </div>
+        <div class="container">
+            <div class="row">
+                <form>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Select Grid(s)</label>
+                    <select class="form-control" id="grids" multiple data-max-options="10" data-live-search="true" aria-label="Default select example">
+                    </select>
+                    <small id="emailHelp" class="form-text text-muted">You can select more than one.</small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Select Employee</label>
+                    <select class="form-control" aria-label="Default select example" id="employees"  data-live-search="true">
+                    </select>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label" for="onlySelected">
+                        <input type="checkbox" class="form-check-input" id="onlySelected" value="1">
+                        Draw only Selected
+                    </label>
+                </div>
+                <button type="button" class="btn btn-primary text-weight-bold grid_selection">Next</button>
+            </form>
+        </div>
+    </div>
+    <a href="#" class="close">
+        <i class="fa fa-times-circle close__icon"></i>
+    </a>
 
-    function fetchDoctors() {
-    	return fetch('https://portal.hudsonpharma.com/HudsonService.svc/GetKarachiDoctorsWithLongLat')
-    		.then(response => response.json())
-    		.then(response => {
-    			let doctors = JSON.parse(response.d)
-    			doctors = doctors
-			        .filter(doctor => doctor.Latitude !== null && doctor.Longitude !== null)
-			        .filter((thing, index, self) =>
-			            index === self.findIndex((t) => (
-			                t.Latitude === thing.Latitude && t.Longitude === thing.Longitude
-			            )))
+</div>
+<a href="#" class="float">
+    <i class="fa fa-plus float__icon"></i>
+</a>
 
-		        return JSON.stringify(doctors);
-    		})
-    }
 
-    function initialize() {
-        var mapProp = {
-            center: myCenter,
-            zoom: 6,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scaleControl: true
-        };
-
-        map = new google.maps.Map(document.getElementById('map'), mapProp);
-        var gridsize = 0.008 * 7; //Grid size in degrees
-
-    	let startingPoint = [22.960094, 60.501127];
-        let initialCoords = [22.960094, 60.501127];
-
-        [...Array(270).keys()].map((key, rowIndex) => {
-        	initialCoords = startingPoint;
-        	[...Array(230).keys()].map((key, lineIndex) => {
-		        let c = [{lat: initialCoords[0], lng: initialCoords[1]}];
-		        // setTimeout(function() {
-		   //      	fetch('http://api.positionstack.com/v1/reverse?access_key=d762a891f0cfa9b5867adb4f8c2493df&query=' +initialCoords[0] + ',' + initialCoords[1])
-					// .then(response => response.json())
-					// .then(data => {
-					// 	if(data.length > 0 && data[0].country === 'Pakistan') {
-							[...Array(3).keys()].map((key, i) => {
-					        	let nextCoords = directions[getDirection(i)](initialCoords)
-					        	if(i===0 && lineIndex === 0) {
-					        		startingPoint = nextCoords
-					        	}
-					        	initialCoords = nextCoords
-					        	c.push({lat: nextCoords[0], lng: nextCoords[1]})
-					        })
-					// 	}
-					// });
-					if(c.length === 4) polygons.push(c);
-		        // }, 500)
-		        
-		        // c.push({lat: initialCoords[0], lng: initialCoords[1]})
-	        })
-        })
-        console.log(polygons.length)
-        download(JSON.stringify(polygons), 'new_coordinates.json', 'application/json')
-        map.data.add({
-		    geometry: new google.maps.Data.Polygon(polygons),
-		});
-        
-        google.maps.event.addListener(map, 'bounds_changed', function() {
-            
-            var markerCluster = new MarkerClusterer(map, markers, {
-                imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
-            });
-        });
-    }
-    var directions = {
-    	up: function(coord) {
-    		return goUp(coord)
-    	},
-    	right: function(coord) {
-    		return goRight(coord)
-    	},
-    	down: function(coord) {
-    		return goDown(coord)
-    	},
-    }
-    function printVerticalLines() {
-    	let startingPoint = [36.9537903, 61.4415223];
-        let initialCoords = [36.9537903, 61.4415223];
-        drawLineArray = [...Array(100).keys()];
-        numberOfLinesArray = [...Array(200).keys()];
-        numberOfLinesArray.map((key, i) => {
-        	let firstPoint;
-        	if(i > 0) {
-        		firstPoint = goRight(initialCoords);
-        	} else {
-        		firstPoint = initialCoords
-        	}
-        	initialCoords = firstPoint;
-        	drawLineArray.map(key => {
-            	let coords = createCoord(initialCoords, 270, 7000)
-	            let polygon = new google.maps.Polyline({
-	            	path: [{lat: initialCoords[0], lng: initialCoords[1]}, {lat: coords[0], lng: coords[1]}],
-	            	map: map,
-	            })
-	            polygon.setOptions(gridstyle);
-	            initialCoords = coords;
-            })
-            initialCoords = firstPoint
-
-        })
-    }
-    function printHorizontalLines() {
-    	let startingPoint = [23.1027909, 61.5539133];
-        let initialCoords = [23.1027909, 61.5539133];
-        [...Array(200).keys()].map((key, i) => {
-        	let firstPoint;
-        	if(i > 0) {
-        		firstPoint = goUp(initialCoords);
-        	} else {
-        		firstPoint = initialCoords
-        	}
-        	initialCoords = firstPoint;
-        	[...Array(250).keys()].map(key => {
-            	let coords = createCoord(initialCoords, 0, 7000)
-	            let polygon = new google.maps.Polyline({
-	            	path: [{lat: initialCoords[0], lng: initialCoords[1]}, {lat: coords[0], lng: coords[1]}],
-	            	map: map,
-	            })
-	            polygon.setOptions(gridstyle);
-	            polygons.push(polygon);
-	            initialCoords = coords;
-            })
-            initialCoords = firstPoint
-
-        })
-    }
-    function goDown(coord) {
-    	const d = google.maps.geometry.spherical.computeOffset(new google.maps.LatLng({lat: coord[0], lng:coord[1]}), 7000, 270);
-    	return [d.lat(), d.lng()];
-    	// return createCoord(coord, 270, 3331)
-    }
-    function goRight(coord) {
-    	const d = google.maps.geometry.spherical.computeOffset(new google.maps.LatLng({lat: coord[0], lng:coord[1]}), 7000, 0);
-    	return [d.lat(), d.lng()];
-    	// return createCoord(coord, 0, 7602);
-    }
-    function goUp(coord) {
-    	const d = google.maps.geometry.spherical.computeOffset(new google.maps.LatLng({lat: coord[0], lng:coord[1]}), 7000, 90);
-    	return [d.lat(), d.lng()];
-    	// return createCoord(coord, 90, 3331)
-    }
-    function createCoord(coord, bearing, distance){
-	    /** http://www.movable-type.co.uk/scripts/latlong.html
-	     φ is latitude, λ is longitude, 
-	     θ is the bearing (clockwise from north), 
-	     δ is the angular distance d/R; 
-	     d being the distance travelled, R the earth’s radius*
-	     **/
-
-	    var 
-	        radius = 6371e3, //meters
-	        δ = Number(distance) / radius, // angular distance in radians
-	        θ = Number(bearing).toRad();
-	        φ1 = coord[1].toRad(),
-	        λ1 = coord[0].toRad();
-
-	    var φ2 = Math.asin(Math.sin(φ1)*Math.cos(δ) + Math.cos(φ1)*Math.sin(δ)*Math.cos(θ));
-
-	    var λ2 = λ1 + Math.atan2(Math.sin(θ)*Math.sin(δ)*Math.cos(φ1), Math.cos(δ)-Math.sin(φ1)*Math.sin(φ2));
-
-	    λ2 = (λ2+3*Math.PI) % (2*Math.PI) - Math.PI; // normalise to -180..+180°
-
-	    return [λ2.toDeg(), φ2.toDeg()]; //[lon, lat]
-	}
-	Number.prototype.toDeg = function() { return this * 180 / Math.PI; }
-	Number.prototype.toRad = function() { return this * Math.PI / 180; }
-
-	function getDirection(index) {
-		switch(index){
-			case 0:
-				return 'up';
-			case 1:
-				return 'right';
-			case 2:
-				return 'down';
-		}
-	}
-
-    function drawFromJSON(data, doctors) {
-        var mapProp = {
-            center: myCenter,
-            zoom: 6,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scaleControl: true
-        };
-
-        map = new google.maps.Map(document.getElementById('map'), mapProp);
-        data.map(coord => {
-            let polygon = new google.maps.Polyline({
-                path: coord.coords,
-                map: map,
-            })
-            polygon.setOptions(coord.containsDoctors === true ? gridstyleWithDoctors : gridstyle);
-            polygons.push(polygon);
-            return coord
-        })
-        // const slicedPolygons = polygons.slice(13600, 21000)
-        // const slicedCoords = data.slice(13600, 21000)
-        // let d = [];
-        // let exist = false
-        // let count = 0
-
-        // slicedPolygons.map((polygon, index) => {
-        //     console.log(index)
-        //     for (const doctor of doctors) {
-        //         exist = google.maps.geometry.poly.containsLocation(
-        //             new google.maps.LatLng(doctor.Latitude, doctor.Longitude),
-        //             polygon
-        //         )
-        //         if(exist === true) count++;
-        //     }
-        //     d[index] = {
-        //         count,
-        //         coords: slicedCoords[index],
-        //         containsDoctors: count > 0,
-        //     }
-        //     exist = false
-        //     count = 0
-        //     return polygon
-        // })
-
-        // console.log('modified', d)
-        // download(JSON.stringify(d), '3.json', 'application/json')
-        doctors.map(function(doctor) {
-            const addedMarkers = markers.filter(marker => {
-                marker.label === `${doctor.DoctorName}-${doctor.DoctorCode}`
-            })
-            if (addedMarkers.length === 0) {
-                var markerposition = { lat: doctor.Latitude, lng: doctor.Longitude };
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(markerposition.lat, markerposition.lng),
-                    label: `${doctor.DoctorName}-${doctor.DoctorCode}`
-                });
-                markers.push(marker);
-            }
-        });
-        google.maps.event.addListener(map, 'bounds_changed', function() {
-            var markerCluster = new MarkerClusterer(map, markers, {
-                imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
-            });
-        });
-    }
-
-    function populateDoctors(doctors) {
-        
-    }
-
-    function download(content, fileName, contentType) {
-        var a = document.createElement("a");
-        var file = new Blob([content], {type: contentType});
-        a.href = URL.createObjectURL(file);
-        a.download = fileName;
-        a.click();
-    }
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.10&sensor=false&libraries=geometry,places&key=AIzaSyCkmw8aEuoiSjeMs-nDkF6FGdGqwWEwtMw"></script>
+<script src="https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/geocodezip/v3-utility-library@master/archive/maplabel/src/maplabel.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/assets/js/globals.js"></script>
+<script type="text/javascript" src="/assets/js/mapFromData.js"></script>
+<script>
     $().ready(function() {
-    	// console.log('right', distanceVertical, 'up', distanceHorizontal)
-    	// console.log('Up',
-    	// 	google.maps.geometry.spherical.computeDistanceBetween(google.maps.LatLng({lat: 23.1027909, lng:61.5539133}), google.maps.LatLng({lat: goUp([23.1027909, 61.5539133])[0], lng: goRight([23.1027909, 61.5539133])[1]})),
-    	// 	'right',
-    	// 	google.maps.geometry.spherical.computeDistanceBetween(google.maps.LatLng({lat: 23.1027909, lng:61.5539133}), google.maps.LatLng({lat: goRight([23.1027909, 61.5539133])[0], lng: goRight([23.1027909, 61.5539133])[1]})),
-    	// );
-    	// console.log(createCoord([24.8352349, 66.9970123], 180, 3000))
-    	// $('#map').show();
-    	// initialize()
+        $ACTION_BUTTON.on('click', function() {
+            $SIDEBAR.animate(ANIMATE_WIDTH, SPEED);
+            $(this).animate(ANIMATE_HEIGHT, SPEED);
+        })
+        $(document).on('click', '.close', function() {
+            $SIDEBAR.animate(ANIMATE_WIDTH, SPEED);
+            $ACTION_BUTTON.animate(ANIMATE_HEIGHT, SPEED);
+        })
+        $.ajax({
+            url: "http://portal.hudsonpharma.com/SalesForce.svc/getAllSpos2",
+        })
+        .done(function( data ) {
+            data = JSON.parse(data.d)
+            data.map(emp => {
+                $('#employees').append($('<option>', {
+                    value: emp.Id,
+                    text: emp.EmployeeName 
+                }));
+            })
+            $('#employees').selectpicker()
+        });
 
         $.getJSON('compiled/compiled_f.json', function(data) {
-            console.log(data.filter(c => c.containsDoctors).length)
+            data.map((c, index) => {
+                if(c.containsDoctors) {
+                    $('#grids').append($('<option>', {
+                        value: index,
+                        text: c.count + '-PK-' + index 
+                    }));
+                }
+            })
+
+            $('#grids').selectpicker();
             $.getJSON('doctors.json', function (doctors) {
-                drawFromJSON(data, doctors)
+                drawFromJSON(data, [])
             })
         });
 
-    	// fetchDoctors().then(response => {
-    	// 	// $('#map').show();
-     //        console.log(123)
-     //        download(response, 'doctors.json', 'application/json');
-    	// 	$('.loader').hide();
-    	// 	populateDoctors(response)
-    	// });
+        $('.grid_selection').on('click', function() {
+            if($('#grids').val().length > 0) {
+                const selected = $('#grids').val()
+                $.getJSON('compiled/compiled_f.json', function(data) {
+                    data = data.map((c, index) => {
+                        c.isSelected = selected.includes(index.toString())
+                        return c;
+                    })
+                    $.getJSON('doctors.json', function (doctors) {
+                        drawFromJSON(data, [], $('#onlySelected:checked').val() == 1)
+                    })
+                })
+            }
+        })
     });
-    </script>
+</script>
 </body>
 
 </html>
