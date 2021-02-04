@@ -74,7 +74,7 @@
             $ACTION_BUTTON.animate(ANIMATE_HEIGHT, SPEED);
         })
         $.ajax({
-            url: "http://portal.hudsonpharma.com/SalesForce.svc/getAllSpos2",
+            url: "https://portal.hudsonpharma.com/SalesForce.svc/getAllSpos2",
         })
         .done(function( data ) {
             data = JSON.parse(data.d)
