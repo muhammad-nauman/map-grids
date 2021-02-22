@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spin.js/4.1.0/spin.min.css" integrity="sha512-ssYEuK9Epo/48VIlBWTFosf1izrgGZqEMELJP+L7Clh0nvaOSTg87dM+Z8L+KKjrPdMbMvKYOOnzBOkNMhWFsg==" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-
-    <link rel="stylesheet" href="assets/css/style.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="/assets/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/slick/slick-theme.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"/>
 </head>
 
 <body>
@@ -21,37 +22,87 @@
         <div class="sidebar__header">
             <h3 class="sidebar__heading">Grids Allocation</h3>
         </div>
-        <div class="container">
-            <div class="row">
-                <form>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Select Grid(s)</label>
-                    <select class="form-control" id="grids" multiple data-max-options="10" data-live-search="true" aria-label="Default select example">
-                    </select>
-                    <small id="emailHelp" class="form-text text-muted">You can select more than one.</small>
-                </div>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Territory Name</label>
-                    <input class="form-control" name="territory" placeholder="Territory Name" />
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Select Employee</label>
-                    <select class="form-control" aria-label="Default select example" id="employees"  data-live-search="true">
-                    </select>
-                </div>
-                <div class="form-check">
-                    <label class="form-check-label" for="onlySelected">
-                        <input type="checkbox" class="form-check-input" id="onlySelected" value="1">
-                        Draw only Selected
-                    </label>
-                </div>
-                <button type="button" class="btn btn-primary text-weight-bold grid_selection">Next</button>
-            </form>
+        <div class="container grid__selection-completed ml-4">
+          <div class="row">
+            <div class="col-sm">
+            <h3 class="text__brand">Team</h3>
+            <p class="team__name">Injectables</p>
         </div>
+        <div class="col-sm">
+            <h3 class="text__brand">RSM</h3>
+            <p class="rsm__name">Injectables</p>
+        </div>
+      </div>
+        <div class="row">
+            <div class="col-sm">
+                <h3 class="text__brand">Territory Name</h3>
+                <p class="territory__name">Injectables</p>
+            </div>
+            <div class="col-sm">
+                <h3 class="text__brand">SPO</h3>
+                <p class="spo__name">Injectables</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h3 class="text__brand">Selected Grids</h3>
+                <ul class="list-group grids__list">
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <button type="button" class="btn btn-warning text-weight-bold change_selection">Change Selections</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary text-weight-bold grid_selection">Confirm</button>
+            </div>
+        </div>
+  </div>
+  <div class="container grid__selection">
+    <div class="row ml-3">
+        <form>
+            <div class="form-group">
+                <label for="territory">Territory Name</label>
+                <input class="form-control" name="territory" id="territory" readonly value=""/>
+            </div>
+            <div class="form-group">
+                <label for="teams">Select Team</label>
+                <select class="form-control" aria-label="Default select example" id="teams"  data-live-search="true">
+                    <option>Team</option>
+                </select>
+            </div>
+            <div class="form-group rsm">
+                <label for="employees">Select RSM</label>
+                <select class="form-control" aria-label="Default select example" id="employees"  data-live-search="true">
+                    <option>RSM</option>
+                </select>
+            </div>
+            <div class="form-group spos">
+                <label for="spos">Select SPO</label>
+                <select class="form-control" aria-label="Default select example" id="spos"  data-live-search="true">
+                    <option>SPO</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="grids">Select Grid(s)</label>
+                <select class="form-control" id="grids" multiple data-max-options="10" data-live-search="true" aria-label="Default select example">
+                </select>
+                <small id="emailHelp" class="form-text text-muted">You can select more than one.</small>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label" for="onlySelected">
+                    <input type="checkbox" class="form-check-input" id="onlySelected" value="1">
+                    Draw only Selected
+                </label>
+            </div>
+            <button type="button" class="btn btn-primary text-weight-bold grid_selection mt-4 mb-4">Next</button>
+        </form>
     </div>
-    <a href="#" class="close">
-        <i class="fa fa-times-circle close__icon"></i>
-    </a>
+</div>
+<a href="#" class="close">
+    <i class="fa fa-times-circle close__icon"></i>
+</a>
 
 </div>
 <a href="#" class="float">
@@ -67,6 +118,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="/assets/js/globals.js"></script>
 <script type="text/javascript" src="/assets/js/mapFromData.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script>
     $().ready(function() {
         $ACTION_BUTTON.on('click', function() {
@@ -83,46 +135,152 @@
         .done(function( data ) {
             data = JSON.parse(data.d)
             data.map(emp => {
-                $('#employees').append($('<option>', {
-                    value: emp.Id,
-                    text: emp.EmployeeName 
+                    // $('#employees').append($('<option>', {
+                    //     value: emp.EmployeeId,
+                    //     text: emp.EmployeeName 
+                    // }));
+                    TEAMS[emp.TeamId] = emp.TeamName;
+                })
+            console.log(TEAMS)
+            TEAMS.map((team, index) => {
+                $('#teams').append($('<option>', {
+                    value: index,
+                    text: team 
                 }));
             })
-            $('#employees').selectpicker()
+            EMPLOYEES = data;
+            $('#teams').selectpicker()
         });
 
-        $.getJSON('compiled/compiled_f.json', function(data) {
+        $.getJSON('compiled/compiled_p.json', function(data) {
+            COORDS = data;
             data.map((c, index) => {
                 if(c.containsDoctors) {
+                    CITIES.push(c.details[0].county)
+                    const territoryName = 'PK-' + generateOptionLabel(c.details[0])
                     $('#grids').append($('<option>', {
-                        value: index,
-                        text: c.count + '-PK-' + index 
+                        value: index + '-' + territoryName,
+                        text: territoryName
                     }));
                 }
             })
 
             $('#grids').selectpicker();
             $.getJSON('doctors.json', function (doctors) {
-                drawFromJSON(data, [])
+                drawFromJSON(data, DOCTORS)
             })
         });
 
-        $('.grid_selection').on('click', function() {
-            if($('#grids').val().length > 0) {
-                const selected = $('#grids').val()
-                $.getJSON('compiled/compiled_f.json', function(data) {
-                    data = data.map((c, index) => {
-                        c.isSelected = selected.includes(index.toString())
-                        return c;
-                    })
-                    $.getJSON('doctors.json', function (doctors) {
-                        drawFromJSON(data, [], $('#onlySelected:checked').val() == 1)
-                    })
+        $(document).on('click', '.grid_selection', function() {
+            TERRITORY_NAME = $('#territory').val();
+            SELECTED_GRIDS = $('#grids').val()
+            if(isValidToReview()) {
+                let selected = [];
+                $('#grids').val().map(sel => {
+                    selected.push(sel.split('-')[0])
                 })
+                COORDS = COORDS.map((c, index) => {
+                    c.isSelected = selected.includes(index.toString())
+                    return c;
+                })
+                drawFromJSON(COORDS, DOCTORS, $('#onlySelected:checked').val() == 1)
+                $('.grid__selection').hide();
+                $('.grid__selection-completed').show();
             }
         })
-    });
-</script>
+
+            // $(document).on('change', '#grids', function() {
+            //     let html = ''
+            //     const selection = $(this).val();
+            //     if(selection.length > 0) {
+            //         COORDS.map((c, index) => {
+            //             if(selection.includes(index.toString())) {
+            //                 html += '<div class="">';
+            //                 // html += '<p>' + (selection.indexOf(index.toString()) + 1) + '. ' + generateOptionLabel(c.details[0]) + '</p>'
+            //                 html += '<ul class="list-group list-group-flush">'
+            //                 c.details.map(d => {
+            //                     html += '<li class="list-group-item">' + generateOptionLabel(d) + '</li>'
+            //                     return d;
+            //                 })
+            //                 html += '</ul>'
+            //                 html += '</div>'
+            //             }
+            //             return c;
+            //         })
+            //         $('.slick').html(html)
+            //         $('.selection__details').show();
+            //         if(SLICK != null) $('.slick').slick('unslick')
+            //         SLICK = $('.slick').slick();
+            //     } else {
+            //         $('.selection__details').hide();
+            //     }
+            // })
+
+            $(document).on('change', '#employees', function() {
+                $('#spos')
+                .find('option')
+                .remove()
+                const selectedRsm = EMPLOYEES.filter(rsm => rsm.EmployeeId == $(this).val())[0] 
+                RSM_NAME = selectedRsm.EmployeeName
+                SPOS = selectedRsm.Spos
+                $('#territory').val(selectedRsm.SlackChannel + '-1');
+                if(SPOS.length > 0) {
+                    SPOS.map(spo => {
+                        $('#spos').append($('<option>', {
+                            value: spo.EmployeeId,
+                            text: spo.EmployeeName
+                        }));
+                    })
+                    $('#spos').selectpicker('refresh');
+                    $('.spos').show();
+                    $('.team__name').html(TEAM_NAME)
+                    $('.rsm__name').html(RSM_NAME)
+                    $('.spo__name').html(SPO_NAME)
+                    $('.territory__name').html(TERRITORY_NAME)
+                    let html = ''
+                    SELECTED_GRIDS.map(grid => {
+                        html += '<li class="list-group-item">' + grid.split('-')[1] + '</li>'
+                    })
+                    $('.grids__list').html(html)
+                } else {
+                    $('.spos').hide();
+                }
+            })
+
+            $(document).on('change', '#teams', function() {
+                $('.spos').hide();
+                $('#employees')
+                .find('option')
+                .remove()
+                RSM = EMPLOYEES.filter(employee => {
+                    if(employee.TeamId == $(this).val()) {
+                        TEAM_NAME = employee.TeamName
+                    }
+                    return employee.TeamId == $(this).val()
+                })
+                RSM.map(r => {
+                    $('#employees').append($('<option>', {
+                        value: r.EmployeeId,
+                        text: r.EmployeeName
+                    }));
+                })
+                $('#employees').selectpicker('refresh');
+                $('.rsm').show();
+            })
+
+            function generateOptionLabel(detail) {
+                existingSameCitiesCount = CITIES.filter(city => city === detail.county).length
+                return detail.county + '_' + (existingSameCitiesCount);
+            }
+            $(document).on('click', '.change_selection', function() {
+                $('.grid__selection-completed').hide();
+                $('.grid__selection').show();
+            })
+            function isValidToReview() {
+                return TEAM_NAME != '' && RSM_NAME != ''  && TERRITORY_NAME != '' && SELECTED_GRIDS.length > 0;
+            }
+        });
+    </script>
 </body>
 
 </html>
