@@ -3,7 +3,7 @@ var map,
     myCenter = new google.maps.LatLng(29.36847417787891, 70.04310603094801),
     gridstyle = { strokeColor: 'yellow', strokeWeight: 1 };
     gridstyleWithDoctors = { strokeColor: 'red', strokeWeight: 1 };
-    selectedGrids = { strokeColor: '#92C83E', strokeWeight: 5 };
+    selectedGrids = { strokeColor: '#4d2f02', strokeWeight: 5 };
     polygons = [],
     markers = []
 
@@ -22,6 +22,11 @@ let RSM = [];
 let TEAM_NAME = '';
 let RSM_NAME = '';
 let SPO_NAME = '';
+let SLACK_CHANNEL_NAME = '';
 let TERRITORY_NAME = '';
 let SELECTED_GRIDS = [];
 let CITIES = [];
+let DISCTINCT_CITIES = [];
+let GRIDS_WITH_DOCTORS = [];
+let CITIES_EMPLOYEES = [];
+let SELECTED_CITIES_EMPLOYEES = [];

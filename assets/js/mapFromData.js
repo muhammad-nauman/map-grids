@@ -36,6 +36,9 @@ function drawFromJSON(data, doctors, onlySelected = false) {
                 } else {
                     polygon.setOptions(coord.containsDoctors === true ? gridstyleWithDoctors : gridstyle);
                 }
+                if(coord.containsDoctors === true) {
+                    GRIDS_WITH_DOCTORS.push(coord)
+                }
                 polygons.push(polygon);
         }
         
@@ -92,6 +95,66 @@ function drawFromJSON(data, doctors, onlySelected = false) {
                 imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
             });
         });
+    }
+
+    function drawFromCities(data, doctors, withAllLabels = false) {
+        var mapProp = {
+            center: myCenter,
+            zoom: 6,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            scaleControl: true
+        };
+
+        map = new google.maps.Map(document.getElementById('map'), mapProp);
+        changeZoom = false
+        let zoomCoord = [];
+
+        data.map(coord => {
+            
+        const start = new google.maps.LatLng(coord.coords[0].lat, coord.coords[0].lng)
+        const end = new google.maps.LatLng(coord.coords[2].lat, coord.coords[2].lng)
+        const center = google.maps.geometry.spherical.interpolate(start, end, 0.5)
+            if(coord.isSelected == true) {
+                coord.coords[4] = coord.coords[0]
+                new MapLabel({
+                    text: coord.label,
+                    position: new google.maps.LatLng(center.lat(), center.lng()),
+                    map: map,
+                    fontSize: 11,
+                    align: 'center'
+                });
+            }
+            let polygon = new google.maps.Polyline({
+                    path: coord.coords,
+                    map: map,
+                })
+                polygon.setOptions(selectedGrids)
+                if(coord.isSelected) {
+                    changeZoom = true
+                    zoomCoord = coord.coords[0]
+                    polygon.setOptions(selectedGrids)
+                } else {
+                    polygon.setOptions(coord.containsDoctors === true ? gridstyleWithDoctors : gridstyle);
+                }
+                polygons.push(polygon);
+                // console.log(google.maps.geometry.spherical.interpolate(start, end, 0.5))
+                if(withAllLabels === true) {
+                    new MapLabel({
+                        text: coord.label,
+                        position: new google.maps.LatLng(center.lat(), center.lng()),
+                        map: map,
+                        fontSize: 11,
+                        align: 'center'
+                    });
+                }
+            
+            return coord
+        })
+        if(changeZoom === true) {
+            myCenter = new google.maps.LatLng(zoomCoord.lat, zoomCoord.lng)
+            map.setCenter(myCenter)
+            map.setZoom(10)
+        }
     }
 
     function download(content, fileName, contentType) {
